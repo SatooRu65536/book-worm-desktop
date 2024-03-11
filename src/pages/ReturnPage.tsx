@@ -1,6 +1,6 @@
-import { ReactComponentElement } from 'react';
+import { ReactElement } from 'react';
 
-const ReturnPage = (): ReactComponentElement => {
+const ReturnPage = (): ReactElement => {
   return <div>Return</div>;
 };
 

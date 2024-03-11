@@ -207,7 +207,7 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
 
   const start = async () => {
     if (!navigator.usb) {
-      console.log('WebUSB not supported');
+      console.error('WebUSB not supported');
       return;
     }
 
@@ -217,7 +217,6 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
       await initEndpoint(device);
       const model = DEVICE_MODEL_MAP[device.productId];
 
-      console.log('start');
       isStarted.current = true;
       while (isStarted.current) {
         if (model === 380) {
@@ -232,6 +231,7 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
           await sleep(100);
         }
       }
+      await device.close();
     } catch (e) {
       console.error(e);
       isStarted.current = false;
@@ -239,17 +239,20 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
   };
 
   const stop = () => {
-    console.log('stop');
     isStarted.current = false;
+    window.removeEventListener('readIdm', ((e: CustomEvent<ReadIdmEvent>) =>
+      subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject);
   };
 
-  useEffect(() => {
-    window.addEventListener('readIdm', ((e: CustomEvent<ReadIdmEvent>) =>
-      subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject);
+  const onReadIdm = ((e: CustomEvent<ReadIdmEvent>) =>
+    subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject;
 
-    return () =>
-      window.removeEventListener('readIdm', ((e: CustomEvent<ReadIdmEvent>) =>
-        subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject);
+  useEffect(() => {
+    window.addEventListener('readIdm', onReadIdm);
+
+    return () => {
+      window.removeEventListener('readIdm', onReadIdm, false);
+    };
   }, []);
 
   return { start, stop } as const;

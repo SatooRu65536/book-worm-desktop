@@ -1,11 +1,16 @@
 import { usePasoriEvent } from '@/hooks/usePasori';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useCallback, useEffect } from 'react';
 
 const LendingPage = (): ReactElement => {
-  const { start } = usePasoriEvent((idm) => console.log(idm));
+  const subscribeIdm = useCallback((idm: string) => console.log(idm), []);
+  const { start, stop } = usePasoriEvent(subscribeIdm);
 
   useEffect(() => {
     start();
+
+    return () => {
+      stop();
+    };
   }, []);
 
   return (
