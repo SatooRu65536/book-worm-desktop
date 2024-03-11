@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 interface DeviceModelMap {
   [key: number]: number;
 }
+
 const DEVICE_MODEL_MAP: DeviceModelMap = {
   0x06c1: 380,
   0x06c3: 380,
@@ -37,11 +38,7 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
   const getPaori = async () => {
     const pairedDevice = await navigator.usb.getDevices();
     const pairedPasori = pairedDevice.find((d) => d.vendorId === 0x054c);
-
-    if (pairedPasori) return pairedPasori;
-
-    const pasori = await requestPasori();
-    return pasori;
+    return pairedPasori;
   };
 
   const requestPasori = async () => {
@@ -205,37 +202,62 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
     return { in: in_, out: out_ };
   };
 
-  const start = async () => {
+  const start = async (): Promise<{ success: boolean; message: string }> => {
     if (!navigator.usb) {
-      console.error('WebUSB not supported');
-      return;
+      const message = 'WebUSB がサポートされていません. 別のブラウザで試してくださいï';
+      return { success: false, message };
+    }
+
+    let device: USBDevice | undefined;
+
+    try {
+      device = (await getPaori()) ?? (await requestPasori());
+    } catch (e) {
+      const message = 'Paori が見つかりませんでした. 接続してください.';
+      return { success: false, message };
+    }
+
+    let model: number | undefined;
+    try {
+      await device.open();
+      await initEndpoint(device);
+      model = DEVICE_MODEL_MAP[device.productId];
+    } catch (e) {
+      const message = '初期化に失敗しました. ページをリロードして再度試してください.';
+      return { success: false, message };
+    }
+
+    if (model === undefined) {
+      const message = '不明なデバイスです. Pasori を接続してください';
+      return { success: false, message };
+    }
+    if (model === 300) {
+      const message = 'Pasori 300 はサポートされていません. 実装してください';
+      return { success: false, message };
     }
 
     try {
-      const device = await getPaori();
-      await device.open();
-      await initEndpoint(device);
-      const model = DEVICE_MODEL_MAP[device.productId];
-
       isStarted.current = true;
       while (isStarted.current) {
-        if (model === 380) {
-          const idm = await session380(device);
+        const idm = await session380(device);
 
-          if (idm === lastIdm.current) continue;
-          lastIdm.current = idm;
-          if (idm === undefined) continue;
+        if (idm === lastIdm.current) continue;
+        lastIdm.current = idm;
+        if (idm === undefined) continue;
 
-          const readIdmEvent = new CustomEvent('readIdm', { detail: { idm } });
-          window.dispatchEvent(readIdmEvent);
-          await sleep(100);
-        }
+        const readIdmEvent = new CustomEvent('readIdm', { detail: { idm } });
+        window.dispatchEvent(readIdmEvent);
+        await sleep(100);
       }
-      await device.close();
     } catch (e) {
-      console.error(e);
-      isStarted.current = false;
+      const message = '不明なエラーが発生しました. ページをリロードして再度試してください.';
+      return { success: false, message };
     }
+
+    await device?.close();
+    isStarted.current = false;
+
+    return { success: true, message: '' };
   };
 
   const stop = () => {

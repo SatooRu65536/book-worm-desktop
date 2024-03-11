@@ -58,8 +58,8 @@ const TopPage = (): ReactElement => {
     <Container>
       <Dialog opend={openedPage !== undefined} close={close}>
         <>
-          {openedPage === 'lending' && <LendingPage />}
-          {openedPage === 'return' && <ReturnPage />}
+          {openedPage === 'lending' && <LendingPage close={close} />}
+          {openedPage === 'return' && <ReturnPage close={close} />}
         </>
       </Dialog>
 

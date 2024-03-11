@@ -21,6 +21,7 @@ const DialogBG = styled.div<{ $opend: boolean }>`
 `;
 
 const DialogBody = styled.div`
+  padding: 20px;
   max-width: 100%;
   width: 90%;
   height: 20%;
