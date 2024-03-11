@@ -62,6 +62,7 @@ const ReturnPage = (props: ReturmPageProps): ReactElement => {
   }, []);
 
   useEffect(() => {
+    setMessage(step.message);
     setLoading(step.index < 1);
   }, [step.id]);
 
