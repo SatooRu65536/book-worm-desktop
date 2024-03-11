@@ -25,6 +25,8 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
   const isStarted = useRef(false);
   const lastIdm = useRef<string>();
 
+  const onReadIdm = ((e: CustomEvent<ReadIdmEvent>) => subscribeIdm(e.detail.idm)) as EventListener;
+
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const paddingZero = (num: string, p: number) => {
@@ -262,12 +264,8 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
 
   const stop = () => {
     isStarted.current = false;
-    window.removeEventListener('readIdm', ((e: CustomEvent<ReadIdmEvent>) =>
-      subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject);
+    window.removeEventListener('readIdm', onReadIdm);
   };
-
-  const onReadIdm = ((e: CustomEvent<ReadIdmEvent>) =>
-    subscribeIdm(e.detail.idm)) as EventListenerOrEventListenerObject;
 
   useEffect(() => {
     window.addEventListener('readIdm', onReadIdm);
