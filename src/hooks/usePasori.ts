@@ -206,6 +206,11 @@ export const usePasoriEvent = (subscribeIdm: (idm: string) => any) => {
   };
 
   const start = async () => {
+    if (!navigator.usb) {
+      console.log('WebUSB not supported');
+      return;
+    }
+
     try {
       const device = await getPaori();
       await device.open();

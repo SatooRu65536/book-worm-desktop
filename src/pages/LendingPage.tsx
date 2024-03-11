@@ -1,20 +1,15 @@
 import { usePasoriEvent } from '@/hooks/usePasori';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 const LendingPage = (): ReactElement => {
   const { start } = usePasoriEvent((idm) => console.log(idm));
 
-  const handleClick = async () => {
-    if (!navigator.usb) {
-      console.log('WebUSB not supported');
-      return;
-    }
-
+  useEffect(() => {
     start();
-  };
+  }, []);
 
   return (
-    <div onClick={handleClick}>
+    <div>
       <h1>Start</h1>
     </div>
   );

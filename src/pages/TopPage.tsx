@@ -1,7 +1,10 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
 import logo from '@/assets/logo.svg';
-import { Link  } from 'react-router-dom';
+import Dialog from '@/components/Dialog';
+import LendingPage from './LendingPage';
+import useDialog from '@/hooks/useDialog';
+// import ReturnPage from './ReturnPage';
 
 const Container = styled.div`
   height: 100vh;
@@ -33,8 +36,9 @@ const ButtonWrapper = styled.div`
   gap: 10px;
 `;
 
-const ButtonArea = styled(Link)`
+const Button = styled.button`
   color: var(--primary);
+  font-size: 1.2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,14 +50,21 @@ const ButtonArea = styled(Link)`
 `;
 
 const TopPage = (): ReactElement => {
+  const [opened, { open, close }] = useDialog(false);
+
   return (
     <Container>
+      <Dialog opend={opened} close={close}>
+        <LendingPage />
+      </Dialog>
+
       <Center>
         <Logo src={logo} alt="logo" />
         <Title>Welcome to BookWorm</Title>
+
         <ButtonWrapper>
-          <ButtonArea to="/lending">貸出</ButtonArea>
-          <ButtonArea to="/return">返却</ButtonArea>
+          <Button onClick={open}>貸出</Button>
+          <Button onClick={open}>返却</Button>
         </ButtonWrapper>
       </Center>
     </Container>
@@ -61,4 +72,3 @@ const TopPage = (): ReactElement => {
 };
 
 export default TopPage;
-
