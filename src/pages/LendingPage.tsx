@@ -66,6 +66,7 @@ const LendingPage = (props: LendingPageProps): ReactElement => {
   }, []);
 
   useEffect(() => {
+    setMessage(step.message);
     setLoading(step.index < 2);
     if (step.id === 'submit') submit();
   }, [step.id]);
