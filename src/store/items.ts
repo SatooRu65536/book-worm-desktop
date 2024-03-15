@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { Item } from './selectItem';
+import { loadable } from 'jotai/utils';
 
 const fetchItems = async () => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -14,4 +15,5 @@ const fetchItems = async () => {
   return items;
 };
 
-export const itemsAtom = atom(async () => await fetchItems());
+const itemsAtom = atom(async () => await fetchItems());
+export const itemAtomLoadable = loadable(itemsAtom);

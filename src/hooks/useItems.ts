@@ -1,8 +1,8 @@
-import { itemsAtom } from '@/store/items';
+import { itemAtomLoadable } from '@/store/items';
 import { useAtomValue } from 'jotai';
 
 const useItems = () => {
-  return useAtomValue(itemsAtom);
+  return useAtomValue(itemAtomLoadable);
 };
 
 export default useItems;
