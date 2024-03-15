@@ -23,6 +23,7 @@ const itemAtom = atom<Item | undefined>(undefined);
 export const selectItemAtom = atom(
   (get) => get(itemAtom),
   async (_get, set, id: Item['id']) => {
+    set(itemAtom, undefined);
     const item = await fetchItem(id);
     set(itemAtom, item);
   }

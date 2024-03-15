@@ -1,26 +1,21 @@
 import { atom, useAtom } from 'jotai';
 
-const openedAtom = atom<string | undefined>(undefined);
+const dialogAtom = atom(false);
 
-const useDialog = <T extends readonly string[]>() => {
-  const [openedPage, setOpenedPage] = useAtom(openedAtom);
+export const useDialog = () => {
+  const [opened, setOpened] = useAtom(dialogAtom);
 
-  const open = (page: T[number]) => {
-    if (page === openedPage) return;
-
-    if (openedPage === undefined) {
-      setOpenedPage(page);
-    } else if (openedPage) {
-      setOpenedPage(undefined);
-      setTimeout(() => setOpenedPage(page), 300);
-    }
+  const open = () => {
+    setOpened(true);
   };
 
   const close = () => {
-    setOpenedPage(undefined);
+    setOpened(false);
   };
 
-  return [openedPage, { open, close }] as const;
-};
+  const toggle = () => {
+    setOpened((prev) => !prev);
+  };
 
-export default useDialog;
+  return [opened, { open, close, toggle }] as const;
+};

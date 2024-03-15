@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import AdminTableBody from './AdminTableBody';
-import { Suspense } from 'react';
-import Loading from '../Loading';
-import useItems from '@/hooks/useItems';
+import { Item } from '@/store/selectItem';
+import { useSelectItem } from '@/hooks/useSelectItem';
+import { useDialog } from '@/hooks/useDialog';
 
 const Table = styled.table`
   padding: 40px 20px;
@@ -18,8 +17,30 @@ const Th = styled.th<{ $w?: number }>`
   background-color: var(--background-dark);
 `;
 
-const AdminTable = () => {
-  const items = useItems();
+const Tr = styled.tr`
+  cursor: pointer;
+`;
+
+const Td = styled.td`
+  padding: 20px 10px;
+  font-size: 1.3rem;
+  border-bottom: 1px solid var(--background-dark);
+`;
+
+interface AdminTableProps {
+  items: Item[];
+}
+
+const AdminTable = (props: AdminTableProps) => {
+  const { items } = props;
+  const [selectItem, select] = useSelectItem();
+  const [_, { open }] = useDialog();
+
+  const handleSelect = (item: Item) => {
+    console.log(selectItem);
+    select(item.id);
+    open();
+  };
 
   return (
     <>
@@ -32,10 +53,18 @@ const AdminTable = () => {
             <Th>備品名</Th>
           </tr>
         </thead>
-        <AdminTableBody items={items.state === 'hasData' ? items.data : []} />
-      </Table>
 
-      {items.state === 'loading' && <Loading dark />}
+        <tbody>
+          {items.map((item) => (
+            <Tr key={item.id} onClick={() => handleSelect(item)}>
+              <Td>{item.id}</Td>
+              <Td>{item.idm}</Td>
+              <Td>{item.type}</Td>
+              <Td>{item.title}</Td>
+            </Tr>
+          ))}
+        </tbody>
+      </Table>
     </>
   );
 };

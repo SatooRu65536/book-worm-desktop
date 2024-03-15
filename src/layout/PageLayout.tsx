@@ -9,7 +9,6 @@ const Layout = styled.main`
 
 interface PageLayoutProps extends HTMLProps<HTMLDivElement> {
   title: string;
-  children: JSX.Element;
 }
 
 const PageLayout = (props: PageLayoutProps) => {

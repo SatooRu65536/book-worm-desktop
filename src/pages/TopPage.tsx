@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import logo from '@/assets/logo.svg';
 import Dialog from '@/components/Dialog';
 import LendingPage from './LendingPage';
-import useDialog from '@/hooks/useDialog';
+import useDialogSwitch from '@/hooks/useDialogSwitch';
 import ReturnPage from './ReturnPage';
 
 const Container = styled.div`
@@ -52,7 +52,7 @@ const Button = styled.button`
 const pages = ['lending', 'return'] as const;
 
 const TopPage = (): ReactElement => {
-  const [openedPage, { open, close }] = useDialog<typeof pages>();
+  const [openedPage, { open, close }] = useDialogSwitch<typeof pages>();
 
   return (
     <Container>

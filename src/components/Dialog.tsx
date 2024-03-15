@@ -42,7 +42,6 @@ const CloseButton = styled(CloseIcon)`
 
 interface DialogProps extends HTMLProps<HTMLDivElement> {
   opend: boolean;
-  children: ReactElement;
   close: () => void;
 }
 
