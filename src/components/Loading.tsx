@@ -1,7 +1,7 @@
 import { HTMLProps } from 'react';
 import styled from 'styled-components';
 
-const LoadingWrapper = styled.div`
+const LoadingWrapper = styled.div<{ $dark: boolean }>`
   --circle-size: 15px;
 
   width: calc(var(--circle-size) * 3 + 30px);
@@ -18,7 +18,7 @@ const LoadingWrapper = styled.div`
       width: var(--circle-size);
       height: var(--circle-size);
       display: inline-block;
-      background-color: var(--background);
+      background-color: var(${({ $dark }) => ($dark ? '--primary' : '--background')});
       border-radius: 50%;
       transform-origin: center center;
       animation: spScaleAlpha 1s infinite linear;
@@ -85,9 +85,15 @@ const LoadingWrapper = styled.div`
   }
 `;
 
-const Loading = (props: HTMLProps<HTMLDivElement>) => {
+interface LoadingProps extends HTMLProps<HTMLDivElement> {
+  dark?: boolean;
+}
+
+const Loading = (props: LoadingProps) => {
+  const { dark, ...rest } = props;
+
   return (
-    <LoadingWrapper {...props}>
+    <LoadingWrapper {...rest} $dark={dark ?? false}>
       <div />
     </LoadingWrapper>
   );

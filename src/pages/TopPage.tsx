@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import logo from '@/assets/logo.svg';
 import Dialog from '@/components/Dialog';
 import LendingPage from './LendingPage';
-import useDialog from '@/globalState/useDialog';
+import useDialog from '@/hooks/useDialog';
 import ReturnPage from './ReturnPage';
 
 const Container = styled.div`

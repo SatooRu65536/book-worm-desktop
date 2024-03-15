@@ -3,6 +3,7 @@
 :root {
   --primary: #51321c;
   --background: #F0E7DA;
+  --background-dark: #c3bbb0;
 
   font-size: 16px;
   color: var(--primary);
